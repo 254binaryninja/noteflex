@@ -35,6 +35,10 @@
       --radius: 0.5rem;
     }
 
+    body{
+      background-color: black;
+    }
+
     .dark {
       --background: 222.2 84% 4.9%;
       --foreground: 210 40% 98%;
@@ -74,3 +78,16 @@
       @apply bg-background text-foreground;
     }
   }
+
+  
+@layer utilities {
+  .ring-remove {
+    @apply focus-visible:ring-0 focus-visible:ring-offset-0;
+  }
+  .glassmorphism{
+    @apply bg-opacity-30 backdrop-blur-md;
+  }
+  .flex-between {
+    @apply flex justify-between items-center;
+  }
+}

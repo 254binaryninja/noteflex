@@ -7,6 +7,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Noteflex",
   description: "An Online peer and  AI powered educational platform",
+  icons:{
+    icon:"/images/Cap.png"
+  }
 };
 
 export default function RootLayout({
@@ -16,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} bg-gray-900`}>{children}</body>
     </html>
   );
 }
