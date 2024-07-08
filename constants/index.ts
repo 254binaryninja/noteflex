@@ -16,3 +16,4 @@ export const navLists = [
       },
 ]
 
+export const footer = ['Privacy','Contact','More']

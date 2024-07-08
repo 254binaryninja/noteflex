@@ -85,9 +85,12 @@
     @apply focus-visible:ring-0 focus-visible:ring-offset-0;
   }
   .glassmorphism{
-    @apply bg-opacity-30 backdrop-blur-md;
+    @apply bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 border border-gray-100
   }
   .flex-between {
     @apply flex justify-between items-center;
+  }
+  .flex-center{
+    @apply flex justify-center items-center;
   }
 }
