@@ -7,8 +7,23 @@ import { footer, navLists } from '@/constants'
 import Lottie from 'lottie-react'
 import study from '../public/animations/study.json'
 import AI from '../public/animations/AI.json'
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import Mobile from '@/components/Mobile'
 
 const Home = () => {
+
+  useGSAP(()=>{
+     gsap.fromTo("#text",{
+      opacity:0,
+      y:20,
+     },{
+      opacity:1,
+      y:0,
+      delay:1,
+      stagger:0.5,
+     })
+  },[])
   
   return (
     <div className='flex flex-col'>
@@ -23,6 +38,7 @@ const Home = () => {
        />
        <p className='text-[26px] font-extrabold text-white max-sm:hidden'>Noteflex</p>
        </Link>
+       <div className='flex-center sm:hidden'><Mobile/></div>
        <div className='flex flex-1 justify-center max-sm:hidden'>
             {navLists.map((nav,i)=>(
               <Link href={nav.route}>
@@ -32,7 +48,8 @@ const Home = () => {
               </div>
               </Link>
             ))}
-       </div>
+        
+      </div>
        </nav>
        <div className='mt-10'>
           <h1 className='flex justify-center  text-8xl font-extrabold
@@ -41,12 +58,23 @@ const Home = () => {
           </h1>
        </div>
        <div className='flex flex-row p-5 justify-start'>
-        <div className='m-5 p-3'>
-          <p className='text-xl text-white font-medium max-w-[850px]'>
-            <span className='text-5xl text-cyan-600 px-4'>Welcome</span>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque nisi, quo ad recusandae
-             sit ut error animi neque nostrum beatae ducimus illo quisquam facilis, 
-             aut velit perspiciatis! Fuga, necessitatibus cum!
+        <div  className='m-5 p-3'>
+          <p id="text" className='text-xl text-white font-medium max-w-[850px]'>
+            Noteflex:
+            <span className='text-3xl text-color'>Your All-in-One Study Buddy</span>
+          Feeling overwhelmed by notes and struggling to find the information you need? 
+          Noteflex is here to revolutionize your studying! Capture all your important ideas in one place,
+          transform them into a powerful knowledge base, and leverage the power of AI to enhance your learning 
+          experience.
+          </p>
+          <p id="text" className='text-xl text-white font-medium max-w-[850px]'>
+          Imagine a platform that not only remembers everything you've written but 
+          also learns from it. With Noteflex's innovative AI features, your notes become 
+          a springboard for deeper understanding. Generate practice questions, personalize your 
+          study experience, and even collaborate with fellow learners through seamless video conferencing.
+
+           No tech expertise needed! Noteflex is designed with simplicity in mind. 
+           Focus on what matters most - mastering your subject - while Noteflex takes care of the rest.
           </p>
         </div>
         
@@ -60,16 +88,20 @@ const Home = () => {
              <span className='font-extrabold text-7xl bg-clip-text text-transparent
               bg-gradient-to-r from-purple-500 to-blue-600 via-white animate-gradient-x ml-5 p-4'>AI</span></h1>
          </div>
-         <div className=' gap-7 max-w-[1500px] z-10 bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-40 border '>
+         <div className='m-4 max-w-[1200px] z-20 bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-40 border '>
           <div className=''>
-          <div style={{width:"50%"}} className='flex-center ml-20'>
+          <div style={{width:"40%"}} className='flex-center ml-20'>
             <Lottie animationData={AI}/>
           </div>
-          <div className='justify-end'>
-          <p className='text-white m-5 p-4'>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio velit illum reiciendis sit iure 
-            corporis nobis necessitatibus ducimus quas quis. Cumque corrupti sit qui, alias natus assumenda eos nisi doloremque?
-          </p>
+          <div  className='justify-end'>
+          <p id="text" className='text-white m-5 p-4 hover:'>
+          Noteflex's built-in AI is like having a <span className='text-3xl font-semibold text-color'> personal study 
+          coach in your pocket</span>. Think of it as a super-powered highlighter that 
+          goes beyond marking text. It analyzes your notes, identifies key concepts, 
+          and even generates practice questions to test your understanding.
+          Stuck on a particular topic? The AI can suggest relevant resources or connect
+           you with classmates who can help. It's like having a built-in study partner that 
+           adapts to your learning style and keeps you on track for success.</p>
           </div>
           </div>
           </div>
