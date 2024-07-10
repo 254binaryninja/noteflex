@@ -84,13 +84,13 @@ const Home = () => {
        </div>
        <div className='bg-gray-800 flex-col'>
          <div className='p-5'>
-           <h1 className='flex-center w-full text-2xl text-white m-4 font-bold'>Here is where your Education is going to be improved with
+           <h1 className='m-6  p-5 w-full text-2xl text-white  font-bold'>Here is where your Education is going to be improved with
              <span className='font-extrabold text-7xl bg-clip-text text-transparent
               bg-gradient-to-r from-purple-500 to-blue-600 via-white animate-gradient-x ml-5 p-4'>AI</span></h1>
          </div>
-         <div className='m-4 max-w-[1200px] z-20 bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-40 border '>
+         <div className='flex-center m-9  z-20 bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-40 border '>
           <div className=''>
-          <div style={{width:"40%"}} className='flex-center ml-20'>
+         <div style={{width:"40%"}} className='flex-center ml-20'>
             <Lottie animationData={AI}/>
           </div>
           <div  className='justify-end'>
