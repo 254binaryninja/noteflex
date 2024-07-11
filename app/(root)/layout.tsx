@@ -7,7 +7,7 @@ import MobileNav from '@/components/MobileNav'
 const HomeLayout = ({children}:{children:ReactNode}) => {
   return (
     <main className='relative'>
-      <nav className='mt-0 flex-between w-full bg-dark-1 px-6 py-4 lg:px-10 z-50'>
+      <nav className='mt-0 flex-between fixed w-full bg-dark-1 px-6 py-4 lg:px-10 z-50'>
       <Link href="/home" className='flex items-center gap-1'>
       <Image
         src="/images/Cap.png"
