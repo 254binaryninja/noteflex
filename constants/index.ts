@@ -14,6 +14,10 @@ export const navLists = [
         label:"Sign In",
         route: "/sign-in",
       },
+      {
+        label:"Sign Up",
+        route : "/sign-up"
+      }
 ]
 
 export const footer = ['Privacy','Contact','More']

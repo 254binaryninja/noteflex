@@ -3,6 +3,10 @@
 import Card from '@/components/Card'
 import { useRouter } from 'next/navigation'
 import React,{useState} from 'react'
+import { splitDocument } from '@/actions/embeddings'
+import { createEmbeddings } from '@/actions/embeddings'
+import { useAuth } from '@clerk/nextjs'
+import { useToast } from '@/components/ui/use-toast'
 import gsap from 'gsap'
 import {useGSAP} from '@gsap/react'
 import Modal from '@/components/Modal'
@@ -10,10 +14,9 @@ import Modal from '@/components/Modal'
 const HomePage = () => {
   const router = useRouter();
   const [cardState,setCardState] = useState<'isUploadingFile'|'isJoiningMeeting'|'isSchedulingMeeting'|'isDoingExam'|undefined>();
-  const [fileUrl,setFileUrl] = useState({
-    file:null,
-    url:""
-  });
+  const [file,setFile] = useState<File>();
+  const {userId} = useAuth();
+  
   const [meetingValues,setMeetingValues] = useState({
     dateTime:new Date(),
     description:'',
@@ -38,14 +41,22 @@ const HomePage = () => {
   }
 
   //File Selection
-   const handleFile = (e:any) => {
-    if (e.target.files[0]) {
-      setFileUrl({
-        file:e.target.files[0],
-        url:URL.createObjectURL(e.target.files[0])
-      })
+  const handleFileChange =(e:React.ChangeEvent<HTMLInputElement>)=>{
+    if(e.target.files) {
+      setFile(e.target.files[0])
     }
-   }
+  }
+  const handleUpload = async ()=>{
+     if (!file || !userId) return ;
+
+    try{
+      const textChunks = await splitDocument(file)
+      await createEmbeddings(userId,file.name,textChunks)
+      router.push('/chatset')
+    }catch(error){
+      console.log('Error uploading file:',error)
+    }
+  }
 
   return (
     <div className='flex flex-col'>
@@ -86,11 +97,11 @@ const HomePage = () => {
       title="Upload your Document to get started "
       className='text-center'
       buttonText='Upload File'
-      handleClick={()=>router}>
+      handleClick={handleUpload}>
          <form>
           <label htmlFor='file' className='glassmorphism p-2 cursor-pointer'>
-            Select Document
-            <input type="file" id="file" style={{display:"none"}} onChange={handleFile}/>
+            Select PDF
+            <input type="file" id="file" style={{display:"none"}} onChange={handleFileChange}/>
           </label>
         </form>
       </Modal>

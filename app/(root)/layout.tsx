@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar'
 import Link from 'next/link'
 import Image from 'next/image'
 import MobileNav from '@/components/MobileNav'
+import { SignedIn, UserButton } from '@clerk/nextjs'
 
 const HomeLayout = ({children}:{children:ReactNode}) => {
   return (
@@ -18,7 +19,13 @@ const HomeLayout = ({children}:{children:ReactNode}) => {
        />
        <p className='text-white font-bold'>Noteflex</p>
        </Link>
+       <div className='flex-between gap-5'>
+       {/* Clerk -User Management */}
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
        <div className='flex-center sm:hidden'><MobileNav/></div>
+       </div>
       </nav>
     <div className='flex'>
         <Navbar/>
