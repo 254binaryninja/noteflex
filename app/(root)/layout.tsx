@@ -19,10 +19,10 @@ const HomeLayout = ({children}:{children:ReactNode}) => {
        />
        <p className='text-white font-bold'>Noteflex</p>
        </Link>
-       <div className='flex-between gap-5'>
+       <div className='flex-between gap-5 text-white'>
        {/* Clerk -User Management */}
-            <SignedIn>
-              <UserButton />
+            <SignedIn> 
+              <UserButton/>
             </SignedIn>
        <div className='flex-center sm:hidden'><MobileNav/></div>
        </div>

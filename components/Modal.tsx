@@ -19,12 +19,13 @@ title:string;
 className?:string;
 children?:ReactNode;
 handleClick?:()=>void;
+loading?:boolean;
 buttonText:string;
 image?:string;
 buttonIcon?:string;
 }
 
-const Modal = ({isOpen,onClose,title,children,className,handleClick,buttonText,image,buttonIcon}:ModalProps) => {
+const Modal = ({isOpen,onClose,title,children,className,handleClick,buttonText,loading,image,buttonIcon}:ModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
   <DialogContent className='flex w-full max-w[520px] flex-col gap-6 border-none bg-dark-1 px-6 py-9 text-white'>
@@ -44,7 +45,7 @@ const Modal = ({isOpen,onClose,title,children,className,handleClick,buttonText,i
        </h1>
        </DialogTitle>
       {children}
-       <Button className='bg-blue-600 ring-remove cursor-pointer'>
+       <Button className={cn(loading ? 'bg-gray-700 cursor-wait': 'bg-blue-600  cursor-pointer')} onClick={handleClick}>
         {buttonIcon && (
           <Image
           src={buttonIcon}

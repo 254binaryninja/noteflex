@@ -82,7 +82,7 @@ const Home = () => {
         <Lottie animationData={study} />
         </div>
        </div>
-       <div className='bg-gray-800 flex-col'>
+       <div id='more' className='bg-gray-800 flex-col'>
          <div className='p-5'>
            <h1 className='m-6  p-5 w-full text-2xl text-white  font-bold'>Here is where your Education is going to be improved with
              <span className='font-extrabold text-7xl bg-clip-text text-transparent
@@ -94,7 +94,7 @@ const Home = () => {
             <Lottie animationData={AI}/>
           </div>
           <div  className='justify-end'>
-          <p id="text" className='text-white m-5 p-4 hover:'>
+          <p id="text"  className='text-white m-5 p-4 hover:'>
           Noteflex's built-in AI is like having a <span className='text-3xl font-semibold text-color'> personal study 
           coach in your pocket</span>. Think of it as a super-powered highlighter that 
           goes beyond marking text. It analyzes your notes, identifies key concepts, 
@@ -106,7 +106,7 @@ const Home = () => {
           </div>
           </div>
          <footer className='w-full max-sm:max-w-[300px] flex-between'>
-           <h1 className='text-bold text-white text-sm m-4 p-3'>A copyright of Chemist Labs @2024</h1>
+           <h1 className='text-bold text-white text-sm m-4 p-3'>© 2024 Chemist Labs</h1>
            <div className='flex-row gap-4'>
                {footer.map((foot,i)=>(
                 <Link href="#" key={i} className='text-blue-600 font-semibold m-4 p-2 hover:text-purple-500 transition-all'>

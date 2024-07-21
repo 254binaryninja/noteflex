@@ -1,6 +1,7 @@
+'use server'
+
 import MistralClient from "@mistralai/mistralai";
 import { createClient } from "@supabase/supabase-js";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 
 //Create new mistral and supabase client
@@ -31,13 +32,14 @@ async function embedInput(input:string){
    return inputResponse.data[0].embedding
 }
 // Retrieve similar embedding from supabase
-const queryEbedding = async (userId: string, queryEmbedding:number[]) => {
+const queryEbedding = async (userId: string, queryEmbedding:number[],filename:string) => {
     if (!supabaseClient) {
         throw new Error('Supabase client is not initialized');
     }
 
     const { data} = await supabaseClient.rpc('match_documents', {
         user_id: userId,
+        file_name:filename,
         query_embedding: queryEmbedding, // Pass the embedding you want to compare
         match_threshold:0.78, // Choose an appropriate threshold for your data
         match_count: 5, // Choose the number of matches
@@ -60,9 +62,9 @@ async function generateChatResponse(context:string,input:string){
    return response.choices[0].message.content
 }
 
-export async function chatResponse(input:string,userId:string) {
+export async function chatResponse(input:string,userId:string,filename:string) {
    const resInput = await embedInput(input)
-   const response = await queryEbedding(userId,resInput)
+   const response = await queryEbedding(userId,resInput,filename)
    const chatResponse = await generateChatResponse(response,input)
 
    return chatResponse;
