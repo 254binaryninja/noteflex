@@ -8,8 +8,8 @@ import { useUser } from '@clerk/nextjs';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import Modal from '@/components/Modal';
-import Card from '@/components/Card';
-import { handleFileUpload } from '@/actions/embeddings';
+import Card from '@/components/Card';import { title } from 'process';
+;
 
 const HomePage = () => {
   const router = useRouter();
@@ -46,28 +46,39 @@ const HomePage = () => {
     }
   };
 
-  const handleUpload = async () => {
-    if (!file || !userId) {
-      if (!file) {
-        toast({ title: 'Error getting file, try again' });
-      } else {
-        toast({ title: 'Error getting userId' });
-      }
-      return;
-    }
-
-    setLoading(true);
+  // Pass FILE TO server using post request
+  const handleFileUpload = async () => {
     try {
-      await handleFileUpload(file, userId, file.name);
-      toast({ title: 'File uploaded successfully' });
-      router.push('/chatset');
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      toast({ title: 'Error uploading file, try again' });
-    } finally {
-      setLoading(false);
+      setLoading(true)
+
+      const formData = new FormData();
+      formData.append('file', file as File);
+      formData.append('userId', userId as string);
+      formData.append('fileName', file?.name as string);
+
+      const response =  await fetch ('api/handleFile.ts',{
+   
+        method:'POST',
+        headers: {
+         'Content-Type': 'application/json',
+       },
+       body: formData,
+
+       
+   });
+
+   if (!response.ok) {
+    throw new Error('Failed to process text.');
+  }
+   setLoading(false)
+   toast({title:'PDF proccesed successfully !'})
+   router.push('/chatset')
+    }catch(error){
+    console.log("Error passing file : ", error)
+    toast({title:'Error passing file'})
     }
-  };
+ 
+  }
 
   return (
     <div className='flex flex-col'>
@@ -109,7 +120,7 @@ const HomePage = () => {
           className='text-center'
           buttonText={loading ? 'Processing....' : 'Upload PDF'}
           loading={loading}
-          handleClick={handleUpload}>
+          handleClick={handleFileUpload}>
           <form>
             <label htmlFor='file' className='glassmorphism p-2 cursor-pointer'>
               Select PDF

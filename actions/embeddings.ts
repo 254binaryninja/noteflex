@@ -1,30 +1,13 @@
-'use server'
-
 import MistralClient from '@mistralai/mistralai';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import pdf from 'pdf-parse';
 
-interface PdfData {
-  text: string;
-  numpages: number;
-  numrender: number;
-  info: {
-    [key: string]: any;
-  };
-  metadata: any;
-}
+// Create new mistral and supabase client
 
-interface EmbeddingData {
-  user_id: string;
-  file_name: string;
-  content: string;
-  embedding: number[];
-}
+const mistralClient = new MistralClient(process.env.NEXT_MISTRAL_CLIENT);
 
-const mistralClient = new MistralClient(process.env.NEXT_MISTRAL_CLIENT!);
-
-let supabaseClient: SupabaseClient | null = null;
+let supabaseClient: any;
 
 if (process.env.NEXT_SUPABASE_PROJECT_URL && process.env.NEXT_SUPABASE_API_KEY) {
   try {
@@ -37,23 +20,46 @@ if (process.env.NEXT_SUPABASE_PROJECT_URL && process.env.NEXT_SUPABASE_API_KEY) 
   }
 }
 
-const extractPDF = async (buffer: Buffer): Promise<string> => {
-  const data = (await pdf(buffer)) as PdfData;
-  return data.text;
+// PDF text extraction
+
+interface PdfData {
+  text: string;
+  numpages: number;
+  numrender: number;
+  info: {
+    [key: string]: any;
+  };
+  metadata: any;
+}
+
+const extractPDF = async (fileBuffer: Buffer): Promise<PdfData> => {
+  const data = await pdf(fileBuffer) as PdfData;
+  return data;
 };
 
-const splitDocument = async (buffer: Buffer): Promise<string[]> => {
-  const text = await extractPDF(buffer);
-  const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 250,
-    chunkOverlap: 50,
-  });
+// Breaking pdf data into chunks
 
-  const output = await splitter.createDocuments([text]);
-  return output.map(chunk => chunk.pageContent);
-};
+async function splitDocument(fileBuffer: Buffer) {
+  try {
+    const data = await extractPDF(fileBuffer);
+    const response = data.text;
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 250,
+      chunkOverlap: 50,
+    });
 
-const saveSupabase = async (embeddingsData: EmbeddingData[]): Promise<void> => {
+    const output = await splitter.createDocuments([response]);
+    const textArr = output.map(chunk => chunk.pageContent);
+
+    return textArr;
+  } catch (error) {
+    console.log('Error splitting document:', error);
+  }
+}
+
+// Save embeddings to supabase
+
+async function saveSupabase(embeddingsData: { user_id: string; file_name: string; content: string; embedding: number[] }[]): Promise<void> {
   if (!supabaseClient) {
     throw new Error('Supabase client is not initialized');
   }
@@ -68,16 +74,17 @@ const saveSupabase = async (embeddingsData: EmbeddingData[]): Promise<void> => {
   } else {
     console.log('Embeddings saved to Supabase:', data);
   }
-};
+}
 
-export const createEmbeddings = async (userId: string, fileName: string, chunks: string[]): Promise<void> => {
+// Create Embeddings using mistral AI
+async function createEmbeddings(userId: string, fileName: string, chunks: string[]): Promise<void> {
   try {
     const embeddings = await mistralClient.embeddings({
       model: 'mistral-embed',
       input: chunks,
     });
 
-    const embeddingsData: EmbeddingData[] = chunks.map((chunk, i) => ({
+    const embeddingsData = chunks.map((chunk, i) => ({
       user_id: userId,
       file_name: fileName,
       content: chunk,
@@ -89,16 +96,17 @@ export const createEmbeddings = async (userId: string, fileName: string, chunks:
     console.error('Error creating embeddings:', error);
     throw error;
   }
-};
+}
 
-export const handleFileUpload = async (file: File, userId: string, fileName: string): Promise<void> => {
+export async function fileUpload(userId: string, fileName: string, fileBuffer: Buffer): Promise<void> {
   try {
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const chunks = await splitDocument(buffer);
-    await createEmbeddings(userId, fileName, chunks);
+    const text = await splitDocument(fileBuffer);
+    if (text) {
+      await createEmbeddings(userId, fileName, text);
+    } else {
+      console.log('Error creating embeddings');
+    }
   } catch (error) {
-    console.error('Error handling file upload:', error);
-    throw error;
+    console.log('Error uploading file:', error);
   }
-};
+}
