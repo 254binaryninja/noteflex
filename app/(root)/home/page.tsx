@@ -56,15 +56,9 @@ const HomePage = () => {
       formData.append('userId', userId as string);
       formData.append('fileName', file?.name as string);
 
-      const response =  await fetch ('api/handleFile.ts',{
-   
+      const response =  await fetch('/api',{
         method:'POST',
-        headers: {
-         'Content-Type': 'application/json',
-       },
-       body: formData,
-
-       
+       body: formData,       
    });
 
    if (!response.ok) {
@@ -76,6 +70,7 @@ const HomePage = () => {
     }catch(error){
     console.log("Error passing file : ", error)
     toast({title:'Error passing file'})
+    setLoading(false)
     }
  
   }

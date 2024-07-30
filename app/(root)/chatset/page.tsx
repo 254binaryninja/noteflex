@@ -101,10 +101,10 @@ const Chat = () => {
       </div>
       {result ?
         <div className='flex-center'>
-          <p id='card' className='font-extrabold text-white text-5xl max-sm:hidden'>
+          <p id='card' className='font-extrabold text-white text-3xl max-sm:hidden'>
             You currently haven't uploaded any PDF file for study
           </p>
-          <PlusCircle id='card' className='text-white/30 cursor-pointer' size={'20%'} onClick={() => router.push('/home')} />
+          <PlusCircle id='card' className='text-white/30 m-2 cursor-pointer' size={'10%'} onClick={() => router.push('/home')} />
         </div> :
         <div id='card' className='mt-20 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-2'>
           {/* Function with card that map over the already uploaded files */}
