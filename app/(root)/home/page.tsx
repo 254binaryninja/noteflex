@@ -8,8 +8,9 @@ import { useUser } from '@clerk/nextjs';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import Modal from '@/components/Modal';
-import Card from '@/components/Card';import { title } from 'process';
-;
+import Card from '@/components/Card';
+import { fileUpload } from '@/actions/embeddings';
+
 
 const HomePage = () => {
   const router = useRouter();
@@ -49,24 +50,35 @@ const HomePage = () => {
   // Pass FILE TO server using post request
   const handleFileUpload = async () => {
     try {
+      // const form = new FormData();
+      // form.append('file', file as File);
+      // console.log(form)
       setLoading(true)
-
-      const formData = new FormData();
-      formData.append('file', file as File);
-      formData.append('userId', userId as string);
-      formData.append('fileName', file?.name as string);
-
-      const response =  await fetch('/api',{
-        method:'POST',
-       body: formData,       
-   });
-
-   if (!response.ok) {
-    throw new Error('Failed to process text.');
+  //     const response =  await fetch('https://api.apyhub.com/extract/text/pdf-file',{
+  //      method:'POST',
+  //      headers: {
+  //       'Content-Type': 'multipart/form-data',
+  //       'apy-token': 'APY0cJ8Ja52WJ4Qdk28MRlWb8rRsm3Sdu0UyKv1nXxLEuwXVqxEUPccmx3oaDK1W7AkESn'
+  //     },
+  //      body:form,     
+  //  });
+  if(file && userId){
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    
+    reader.onload = async() => {
+      const textfile = reader.result?.toString().split(',')[1];
+      // Send base64String and other data (userId, fileName) to the server using your preferred method (e.g., fetch)
+    if(textfile)  
+    await fileUpload(userId,file.name,textfile)
+    setLoading(false)
+    router.push('/chatset')
+    toast({title:'PDF proccesed successfully !'})
+    };
+    
+    
   }
-   setLoading(false)
-   toast({title:'PDF proccesed successfully !'})
-   router.push('/chatset')
+  
     }catch(error){
     console.log("Error passing file : ", error)
     toast({title:'Error passing file'})

@@ -1,7 +1,9 @@
+'use server'
+
 import MistralClient from '@mistralai/mistralai';
 import { createClient } from '@supabase/supabase-js';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import pdf from 'pdf-parse';
+import pdf from 'pdf-parse'
 
 // Create new mistral and supabase client
 
@@ -20,38 +22,44 @@ if (process.env.NEXT_SUPABASE_PROJECT_URL && process.env.NEXT_SUPABASE_API_KEY) 
   }
 }
 
-// PDF text extraction
+// // PDF text extraction
 
-interface PdfData {
-  text: string;
-  numpages: number;
-  numrender: number;
-  info: {
-    [key: string]: any;
-  };
-  metadata: any;
-}
+// interface PdfExtractionOptions {
+//   firstPage?: number;
+//   lastPage?: number;
+//   password?: string;
+// }
+// export async function extractTextFromPdf(file: File): Promise<string> {
+//   try {
+//     const fileReader = new FileReader();
+//     fileReader.readAsArrayBuffer(file);
 
-const extractPDF = async (fileBuffer: Buffer): Promise<PdfData> => {
-  const data = await pdf(fileBuffer) as PdfData;
-  return data;
-};
+//     const pdfData = await new Promise<ArrayBuffer>((resolve, reject) => {
+//       fileReader.onload = () => resolve(fileReader.result as ArrayBuffer);
+//       fileReader.onerror = reject;
+//     });
+
+//     const data = await pdf(pdfData);
+//     return data.text;
+//   } catch (error) {
+//     console.error('Error extracting text from PDF:', error);
+//     throw error;
+//   }
+// }
 
 // Breaking pdf data into chunks
 
-async function splitDocument(fileBuffer: Buffer) {
+async function splitDocument(text:string) {
   try {
-    const data = await extractPDF(fileBuffer);
-    const response = data.text;
-    const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 250,
-      chunkOverlap: 50,
-    });
+   const splitter = new RecursiveCharacterTextSplitter({
+    chunkSize:250,
+    chunkOverlap:40
+   })
 
-    const output = await splitter.createDocuments([response]);
-    const textArr = output.map(chunk => chunk.pageContent);
+   const output = await splitter.createDocuments([text])
+   const textArr = output.map(chunk => chunk.pageContent)
+   return textArr
 
-    return textArr;
   } catch (error) {
     console.log('Error splitting document:', error);
   }
@@ -98,14 +106,21 @@ async function createEmbeddings(userId: string, fileName: string, chunks: string
   }
 }
 
-export async function fileUpload(userId: string, fileName: string, fileBuffer: Buffer): Promise<void> {
+export async function fileUpload(userId: string, fileName: string, file: string): Promise<void> {
   try {
-    const text = await splitDocument(fileBuffer);
-    if (text) {
-      await createEmbeddings(userId, fileName, text);
-    } else {
-      console.log('Error creating embeddings');
-    }
+    if(!fileName ||!file){
+      throw new Error("File name and file not received , check the embeddings file")
+    }else{
+      const text = await splitDocument(file)
+      console.log("success splitting file")
+      console.log(text)
+      if(text){
+        await createEmbeddings(userId,fileName,text)
+        console.log("Success")
+      }else{
+        throw new Error("Error at the splitDocument function")
+      }
+      }     
   } catch (error) {
     console.log('Error uploading file:', error);
   }

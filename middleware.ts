@@ -7,7 +7,7 @@ const protectedRoutes = createRouteMatcher([
     '/performance',
     '/upcoming',
     '/recordings',
-    '/api',
+    '/api(,*)',
     '/meeting(,*)',
     '/chat(,*)',
     '/study-room',

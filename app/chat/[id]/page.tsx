@@ -26,6 +26,7 @@ const NoteChat = ({params : id}:{params:{id:string}}) => {
   const [loading,setLoading] = useState<boolean>();
   const [showResult,setShowResault] = useState<boolean>();
   const [resultData,setResultData] = useState<string>();
+  const [messages,setMessages] = useState([]);
 
   const response = async () => {
     setResultData(" ")
@@ -41,6 +42,7 @@ const NoteChat = ({params : id}:{params:{id:string}}) => {
  
   return (
     <div className='flex flex-col gap-6'>
+      
      {!showResult?<>
      <div className=' flex flex-col gap-3  mt-20  p-4  flex-center'>
         <p className='text-9xl max-sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-600'>Hello {user?.username},</p>
