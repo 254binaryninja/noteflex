@@ -22,40 +22,35 @@ if (process.env.NEXT_SUPABASE_PROJECT_URL && process.env.NEXT_SUPABASE_API_KEY) 
   }
 }
 
-// // PDF text extraction
+// PDF text extraction
 
-// interface PdfExtractionOptions {
-//   firstPage?: number;
-//   lastPage?: number;
-//   password?: string;
-// }
-// export async function extractTextFromPdf(file: File): Promise<string> {
-//   try {
-//     const fileReader = new FileReader();
-//     fileReader.readAsArrayBuffer(file);
+export async function extractTextFromPdf(file: File): Promise<string> {
+  try {
+    const fileReader = new FileReader();
+    fileReader.readAsArrayBuffer(file);
 
-//     const pdfData = await new Promise<ArrayBuffer>((resolve, reject) => {
-//       fileReader.onload = () => resolve(fileReader.result as ArrayBuffer);
-//       fileReader.onerror = reject;
-//     });
+    const pdfData = await new Promise<ArrayBuffer>((resolve, reject) => {
+      fileReader.onload = () => resolve(fileReader.result as ArrayBuffer);
+      fileReader.onerror = reject;
+    });
 
-//     const data = await pdf(pdfData);
-//     return data.text;
-//   } catch (error) {
-//     console.error('Error extracting text from PDF:', error);
-//     throw error;
-//   }
-// }
+    const data = await pdf(pdfData);
+    return data.text;
+  } catch (error) {
+    console.error('Error extracting text from PDF:', error);
+    throw error;
+  }
+}
 
 // Breaking pdf data into chunks
 
-async function splitDocument(text:string) {
+async function splitDocument(file:File) {
   try {
    const splitter = new RecursiveCharacterTextSplitter({
     chunkSize:250,
     chunkOverlap:40
    })
-
+   const text = await extractTextFromPdf(file)
    const output = await splitter.createDocuments([text])
    const textArr = output.map(chunk => chunk.pageContent)
    return textArr
@@ -106,7 +101,7 @@ async function createEmbeddings(userId: string, fileName: string, chunks: string
   }
 }
 
-export async function fileUpload(userId: string, fileName: string, file: string): Promise<void> {
+export async function fileUpload(userId: string, fileName: string, file: File): Promise<void> {
   try {
     if(!fileName ||!file){
       throw new Error("File name and file not received , check the embeddings file")

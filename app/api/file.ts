@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { fileUpload } from '@/actions/embeddings';
 import { auth } from '@clerk/nextjs/server';
-
+import formidable from 'formidable';
 
 
 export const config = {
@@ -10,8 +10,7 @@ export const config = {
   },
 };
 
-
-export default async function POST(req:Request, res: NextApiResponse) {
+export default async function POST(req:NextApiRequest, res: NextApiResponse) {
   const { userId } = auth();
 
   if (!userId) {
@@ -19,17 +18,23 @@ export default async function POST(req:Request, res: NextApiResponse) {
   }
 
   try {
-    const formData = await req.formData();
-    const fileName = formData.get('filename')?.toString();
-    const file = formData.get('file') as File;
+    const form = formidable({ multiples: true });
 
-    if (!fileName || !file) {
-      return res.status(400).json({ message: 'Missing filename or file' });
-    }
+    form.parse(req, async (err,files) => {
+      if (err) {
+        return res.status(500).json({ error: 'Error parsing file' });
+      }
+      const file = files.file as unknown as File;
+      const fileName = file.name;
 
-    await fileUpload(userId, fileName, file);
+      if (!fileName || !file) {
+        return res.status(400).json({ message: 'Missing filename or file' });
+      }
+      await fileUpload(userId, fileName, file);
+      res.status(200).json({ message: 'File processed successfully' });
+    })
 
-    res.status(200).json({ message: 'File processed successfully' });
+  
   } catch (error) {
     console.error('Error handling file:', error);
     // Consider logging error to a centralized error tracking service
