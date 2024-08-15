@@ -4,10 +4,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import MobileNav from '@/components/MobileNav'
 import { SignedIn, UserButton } from '@clerk/nextjs'
+import StreamVideoProvider from '@/Providers/StreamClientProvider'
 
 const HomeLayout = ({children}:{children:ReactNode}) => {
   return (
     <main className='relative'>
+      <StreamVideoProvider>
       <nav className='mt-0 flex-between fixed w-full bg-dark-1 px-6 py-4 lg:px-10 z-50'>
       <Link href="/home" className='flex items-center gap-1'>
       <Image
@@ -33,6 +35,7 @@ const HomeLayout = ({children}:{children:ReactNode}) => {
        <div className='w-full'>{children}</div>
        </section>
     </div>
+    </StreamVideoProvider>
     </main>
   )
 }

@@ -1,9 +1,13 @@
 import React from 'react'
+import CallList from '@/components/CallList'
 
-const Upcomings = () => {
+const Upcoming = () => {
   return (
-    <div>Upcomings</div>
+    <section className='flex size-full flex-col gap-10 text-white'>
+    <h1 className='text-3xl font-bold'>Upcoming meetings</h1>
+    <CallList type="upcoming"/>
+  </section>
   )
 }
 
-export default Upcomings
+export default Upcoming

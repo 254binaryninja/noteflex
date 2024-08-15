@@ -45,7 +45,7 @@ const NoteChat = ({params : id}:{params:{id:string}}) => {
       
      {!showResult?<>
      <div className=' flex flex-col gap-3  mt-20  p-4  flex-center'>
-        <p className='text-9xl max-sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-600'>Hello {user?.username},</p>
+        <p className='text-9xl max-sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-600'>Hello {user?.lastName},</p>
         <p className='text-7xl max-sm:text-4xl text-white/30 font-extrabold'>how can I help today ? </p>
       </div><div className='flex-center mt-20 grid    md:grid-cols-2 xl:grid-cols-2'>
           <Card

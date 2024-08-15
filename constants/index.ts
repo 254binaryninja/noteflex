@@ -35,13 +35,8 @@ export const sidebarLinks = [
   },
   {
     label:"Classroom",
-    route:"/classroom",
-    imgURL:"/images/classroom.png"
-  },
-  {
-    label:"study-room",
     route:"/study-room",
-    imgURL:"/images/study.png"
+    imgURL:"/images/classroom.png"
   },
   {
     label:"recordings",

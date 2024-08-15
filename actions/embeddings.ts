@@ -22,6 +22,8 @@ if (process.env.NEXT_SUPABASE_PROJECT_URL && process.env.NEXT_SUPABASE_API_KEY) 
   }
 }
 
+
+
 // PDF text extraction
 
 export async function extractTextFromPdf(file: File): Promise<string> {
@@ -101,11 +103,12 @@ async function createEmbeddings(userId: string, fileName: string, chunks: string
   }
 }
 
-export async function fileUpload(userId: string, fileName: string, file: File): Promise<void> {
+export async function fileUpload(userId: string,file: File): Promise<void> {
   try {
-    if(!fileName ||!file){
+    if(!file){
       throw new Error("File name and file not received , check the embeddings file")
     }else{
+      const fileName = file.name;
       const text = await splitDocument(file)
       console.log("success splitting file")
       console.log(text)

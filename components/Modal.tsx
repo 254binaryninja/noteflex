@@ -20,7 +20,7 @@ className?:string;
 children?:ReactNode;
 handleClick?:()=>void;
 loading?:boolean;
-buttonText:string;
+buttonText?:string;
 image?:string;
 buttonIcon?:string;
 }

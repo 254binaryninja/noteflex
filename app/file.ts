@@ -25,12 +25,10 @@ export default async function POST(req:NextApiRequest, res: NextApiResponse) {
         return res.status(500).json({ error: 'Error parsing file' });
       }
       const file = files.file as unknown as File;
-      const fileName = file.name;
-
-      if (!fileName || !file) {
+      if (!file) {
         return res.status(400).json({ message: 'Missing filename or file' });
       }
-      await fileUpload(userId, fileName, file);
+      await fileUpload(userId,file);
       res.status(200).json({ message: 'File processed successfully' });
     })
 
