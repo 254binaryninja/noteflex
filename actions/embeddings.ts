@@ -103,7 +103,7 @@ async function createEmbeddings(userId: string, fileName: string, chunks: string
   }
 }
 
-export async function fileUpload(userId: string,file: File): Promise<void> {
+export async function fileUpload(userId: string,file: File): Promise<boolean | undefined> {
   try {
     if(!file){
       throw new Error("File name and file not received , check the embeddings file")
@@ -118,7 +118,8 @@ export async function fileUpload(userId: string,file: File): Promise<void> {
       }else{
         throw new Error("Error at the splitDocument function")
       }
-      }     
+      } 
+     return true     
   } catch (error) {
     console.log('Error uploading file:', error);
   }

@@ -24,7 +24,9 @@ import Card from '@/components/Card';
 
 const HomePage = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState<boolean>();
   const  client = useStreamVideoClient();
+  const [file, setFile] = useState<File|null>(null);
   const { toast } = useToast();
   const [cardState, setCardState] = useState<'isUploadingFile' | 'isJoiningMeeting' | 'isSchedulingMeeting' | 'isDoingExam' | undefined>();
   const { user } = useUser();
@@ -47,6 +49,21 @@ const HomePage = () => {
       stagger: 0.5,
     });
   }, []);
+
+//Create handle file change function
+const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  setFile(file);
+};
+
+// Create handle file upload function to upload file to server
+const handleFileUpload = async () => {
+  if (!file) return;
+  setLoading(true);
+  const formData = new FormData();
+  formData.append('file', file);
+};
 
 // Create meeting functionality
    const createMeeting = async ()=>{
@@ -123,18 +140,18 @@ const HomePage = () => {
         <Modal
           isOpen={cardState === 'isUploadingFile'}
           onClose={() => setCardState(undefined)}
-          // title="Upload your Document to get started"
-          // className='text-center'
-          // buttonText={loading ? 'Processing....' : 'Upload PDF'}
-          // loading={loading}
-          // handleClick={handleFileUpload}
+          title="Upload your Document to get started"
+          className='text-center'
+          buttonText={loading ? 'Processing....' : 'Upload PDF'}
+          loading={loading}
+          handleClick={handleFileUpload}
            >
-          {/* <form>
+          <form>
             <label htmlFor='file' className='glassmorphism p-2 cursor-pointer'>
               Select PDF
               <input type="file" id="file" style={{ display: "none" }} onChange={handleFileChange} />
             </label>
-          </form> */}
+          </form>
         </Modal>
 
         {!callDetails ? (

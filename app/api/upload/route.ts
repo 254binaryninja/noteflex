@@ -26,16 +26,27 @@ export default async function POST(req:NextRequest, res: NextApiResponse) {
     //   await fileUpload(userId,file);
     //   res.status(200).json({ message: 'File processed successfully' });
     // })
-     const formData :FormData = await req.formData();
-     const uploadedFile = formData.getAll('filepond');
 
-     if(uploadedFile) {
-      console.log("Uploaded file:",uploadedFile)
-      if(uploadedFile instanceof File) {
-        await fileUpload(userId,uploadedFile)
-        res.status(201).json({message:"File processed successfully"})
-      }
-     }
+     const formData = await req.formData();
+     const file = formData.get('file') as File;
+
+     if (!file) {
+      return res.status(400).json({ message: 'Missing filename or file' });
+    }
+    const response = await fileUpload(userId,file);
+    if(response){
+      res.status(200).json({ message: 'File processed successfully' });
+    }
+    //  const formData :FormData = await req.formData();
+    //  const uploadedFile = formData.getAll('filepond');
+
+    //  if(uploadedFile) {
+    //   console.log("Uploaded file:",uploadedFile)
+    //   if(uploadedFile instanceof File) {
+    //     await fileUpload(userId,uploadedFile)
+    //     res.status(201).json({message:"File processed successfully"})
+    //   }
+    //  }
   } catch (error) {
     console.error('Error handling file:', error);
     // Consider logging error to a centralized error tracking service
