@@ -14,8 +14,8 @@ import { cn } from '@/lib/utils';
 
 interface ModalProps {
 isOpen:boolean;
-onClose:()=>void;
-title:string;
+onClose?:()=>void;
+title?:string;
 className?:string;
 children?:ReactNode;
 handleClick?:()=>void;

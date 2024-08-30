@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@clerk/nextjs';
 import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '@clerk/nextjs';
 import gsap from 'gsap';
@@ -21,7 +20,6 @@ import {
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import Card from '@/components/Card';
-import { fileUpload } from '@/actions/embeddings';
 
 
 const HomePage = () => {
@@ -29,9 +27,6 @@ const HomePage = () => {
   const  client = useStreamVideoClient();
   const { toast } = useToast();
   const [cardState, setCardState] = useState<'isUploadingFile' | 'isJoiningMeeting' | 'isSchedulingMeeting' | 'isDoingExam' | undefined>();
-  const [file, setFile] = useState<File>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const { userId } = useAuth();
   const { user } = useUser();
   const [date,setDate] = useState<Date>();
   const [values, setValues] = useState({
@@ -40,7 +35,6 @@ const HomePage = () => {
     link: '',
   });
   const [callDetails,setCallDetails] = useState<Call>();
-
 
   useGSAP(() => {
     gsap.fromTo("#text", {
@@ -54,20 +48,7 @@ const HomePage = () => {
     });
   }, []);
 
-
-  
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
-      toast({ title: 'File Selected' });
-    } else {
-      toast({ title: 'Try selecting file again' });
-    }
-  };
-
 // Create meeting functionality
-
    const createMeeting = async ()=>{
     if(!client || !user) return;
 
@@ -102,30 +83,6 @@ const HomePage = () => {
       toast({title:'Failed to create Meeting'})
     }
    }
-
-  // Pass FILE TO server using post request
-  const handleFileUpload = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('file', file as File);
-      toast({ title: 'File Set'});
-      setLoading(true);
-      const response =  await fetch('api/file',{
-       method:"POST",
-       body:formData,     
-   });
-   const result = await response.json();
-   console.log(result)
-   setLoading(false)
-   router.push('/chatset')
-   toast({title:'PDF proccesed successfully !'})   
-    }catch(error){
-    console.log("Error passing file : ",error)
-    toast({title:'Error passing file'})
-    setLoading(false)
-    }
- 
-  }
 
   const meetingLink = `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${callDetails?.id}`
 
@@ -166,18 +123,18 @@ const HomePage = () => {
         <Modal
           isOpen={cardState === 'isUploadingFile'}
           onClose={() => setCardState(undefined)}
-          title="Upload your Document to get started"
-          className='text-center'
-          buttonText={loading ? 'Processing....' : 'Upload PDF'}
-          loading={loading}
-          handleClick={handleFileUpload}
-          >
-          <form>
+          // title="Upload your Document to get started"
+          // className='text-center'
+          // buttonText={loading ? 'Processing....' : 'Upload PDF'}
+          // loading={loading}
+          // handleClick={handleFileUpload}
+           >
+          {/* <form>
             <label htmlFor='file' className='glassmorphism p-2 cursor-pointer'>
               Select PDF
               <input type="file" id="file" style={{ display: "none" }} onChange={handleFileChange} />
             </label>
-          </form>
+          </form> */}
         </Modal>
 
         {!callDetails ? (
